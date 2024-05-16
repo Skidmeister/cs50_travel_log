@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add trip info
+{% endblock %}
+
+{% block main %}
+    <form action="/add-trip-info/{{ trip['id'] }}" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto"
+            name="transportation_mode" placeholder="Transportation mode" type="text">
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" class="form-control mx-auto w-auto"
+            name="transportation_cost" placeholder="Transportation cost" type="number">
+        </div>        
+        <div class="mb-3">
+            <input autocomplete="off" class="form-control mx-auto w-auto"
+            name="accomodation_type" placeholder="Type of accomodation" type="text">
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" class="form-control mx-auto w-auto"
+            name="accomodation_cost" placeholder="Cost of accomodation" type="number">
+        </div>
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+{% endblock %}

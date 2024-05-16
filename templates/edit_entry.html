@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit entry
+{% endblock %}
+
+{% block main %}
+    <p>Edit entry</p>
+    <form action="/edit-entry/{{ entry['id'] }}" method="post">
+        <div class="mb-3">
+            <textarea autocomplete="off" autofocus class="form-control mx-auto col-md-6" id="auto-expanding-textarea" name="text" placeholder="Type text here..." rows="3">
+                {{ entry['text'] }}
+            </textarea>
+        </div>
+        
+        <script>
+            const textarea = document.getElementById('auto-expanding-textarea');
+            textarea.addEventListener('input', autoResize, false);
+        
+            function autoResize() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            }
+        </script>
+        
+        
+        <select name="type">
+            <option disabled value="">Type of entry</option>
+            <option value="day_entry" {% if entry['type'] == 'day_entry' %} selected {% endif %}>Day entry</option>
+            <option value="summary" {% if entry['type'] == 'summary' %} selected {% endif %}>Trip summary</option>      
+        </select>
+        
+        <select name="mood">
+            <option disabled selected value="">Mood 1-6</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>        
+        </select>
+        <button class="btn btn-primary" type="submit">Submit edit</button>
+    </form>
+{% endblock %}

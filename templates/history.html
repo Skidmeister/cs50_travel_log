@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+
+History
+
+{% endblock %}
+
+
+{% block main %}
+
+<table>
+    <th>Time</th>
+    <th>Trip tile</th>
+    <th>Text</th>
+    <th>Mood</th>
+    <th>Type</th>
+    {% for entry in entries %}
+        <tr>
+            <td> {{ entry['datetime'] }}</td>
+            <td> {{ entry['title'] }} </td>
+            <td> {{ entry['text'] }}</td>
+            <td> {{ entry['mood'] }} </td>
+            <td> {{ entry['type'] }} </td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+
+{% endblock %}

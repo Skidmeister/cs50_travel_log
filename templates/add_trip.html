@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add new trip
+{% endblock %}
+
+{% block main %}
+    <form action="/add-trip" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto"
+            name="title" placeholder="Trip Title" type="text">
+        </div>
+
+        <div class="mb-3">
+            <input autocomplete="off" class="form-control mx-auto w-auto"
+            name="country" placeholder="Country" type="text">
+        </div>     
+
+        <div class="mb-3">
+            <input autocomplete="off" class="form-control mx-auto w-auto"
+            name="city" placeholder="City" type="text">
+        </div>   
+
+        <div class="mb-3">
+            <label for="start_date">Start date:</label>
+            <input autocomplete="off" class="form-control mx-auto w-auto" id="start_date" name="start_date" placeholder="Start date" type="date">
+        </div>
+
+        <div class="mb-3">
+            <label for="end_date">End date:</label>
+            <input autocomplete="off" class="form-control mx-auto w-auto" id="end_date" name="end_date" placeholder="End date" type="date">
+        </div>
+
+        
+        <button class="btn btn-primary" type="submit">Submit</button>
+    </form>
+{% endblock %}

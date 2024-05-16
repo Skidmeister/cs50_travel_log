@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+
+Trips!
+
+{% endblock %}
+
+
+{% block main %}
+
+<table>
+    <th>Trip title</th>
+    <th>Start date</th>
+    <th>End date</th>
+    <th>Country</th>
+    <th>City</th>
+    {% for trip in trips %}
+        <tr>
+            <td><a href="{{ url_for('trip', id=trip['id']) }}">{{ trip['title'] }}</a></td>
+            <td> {{ trip['start_date'] }} </td>
+            <td>{{ trip['end_date'] }}</td>
+            <td> {{ trip['country'] }} </td>
+            <td> {{ trip['city'] }} </td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

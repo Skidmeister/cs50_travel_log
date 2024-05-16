@@ -35,3 +35,8 @@
     width: 500px;
     height: 50px;
 }
+
+  .trip_size {
+    max-height: 450px;
+    width: auto; 
+}

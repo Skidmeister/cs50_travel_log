@@ -25,8 +25,18 @@ def serve_file(filename):
 
 @app.route("/")
 def index():
-    trips = db.execute("SELECT id, start_date, end_date, country, city FROM trips")
-    return render_template("index.html", trips=trips)
+    trips = db.execute("SELECT id, start_date, end_date, country, city, title FROM trips")
+    
+    #prepare a dictionary with images where key is trip id and value is the name of the file
+    images = [file for file in os.listdir('static/uploads') if file !=".DS_Store"]
+    print(images)
+    images_dict = {}
+    for image in images:
+        image_id, image_ext = os.path.splitext(image)
+        images_dict[int(image_id)] = image
+    print(images_dict)
+
+    return render_template("index.html", trips=trips, images=images_dict)
 
 
 

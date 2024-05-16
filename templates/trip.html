@@ -37,7 +37,7 @@
 </div>
 <h2> Image </h2>
 {% if image %}
-    <img src="{{ url_for('serve_file', filename= image) }}" alt="Trip Image">
+    <img src="{{ url_for('serve_file', filename= image) }}" alt="Trip Image" class="trip_size">
 {% endif %}
 
 <div>

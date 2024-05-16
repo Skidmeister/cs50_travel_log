@@ -9,5 +9,17 @@ Travel log!
 
 {% block main %}
 
-    <p>This is where a nice overview of the trips will be placed, together with the interactive map.</p>
+    {% for trip in trips %}
+
+        <div class="card" style="width: 18rem;">
+            <img src="{{ url_for('serve_file', filename=images[trip['id']]) }}" class="card-img-top" alt="Trip photo from {{ trip['city'] }}">
+            <div class="card-body">
+            <h5 class="card-title">{{ trip['title'] }}</h5>
+            <p class="card-text">{{ trip['start_date'] }} - {{ trip['end_date'] }}</p>
+            <a href="{{ url_for('trip', id=trip['id']) }}" class="btn btn-primary">Explore</a>
+            </div>
+        </div>
+
+    {% endfor %}
+
 {% endblock %}

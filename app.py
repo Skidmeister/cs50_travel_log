@@ -2,30 +2,59 @@ import os
 import sqlite3
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
 
 from datetime import datetime
 # Configure the app
 app = Flask(__name__)
 
+# Define the directory to store uploaded files
+UPLOADS = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOADS
+
 # Configure CS50 Library to use SQLite database
 db = SQL("sqlite:///travel_log.db")
+
+# function to serve an image
+@app.route('/static/uploads/<path:filename>')
+def serve_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+
+
 
 @app.route("/")
 def index():
     trips = db.execute("SELECT id, start_date, end_date, country, city FROM trips")
     return render_template("index.html", trips=trips)
 
+
+
 @app.route("/trips")
 def trips():
     trips = db.execute("SELECT * FROM trips")
     return render_template("trips.html", trips=trips)
 
+
+
+
 @app.route("/trip/<int:id>")
 def trip(id):
     trip = db.execute("SELECT * FROM trips WHERE id = ?", id)[0]
     entries = db.execute("SELECT * FROM entries WHERE trip_id = ?", id)
-    return render_template("trip.html", trip=trip, entries=entries)
+
+    image_name = None
+    # IMAGE: check if the image is there
+    for file in os.listdir('static/uploads'):
+        file_id, file_ext = os.path.splitext(file)
+
+        if file_id == str(id):
+            image_name = file
+
+    return render_template("trip.html", trip=trip, entries=entries, image=image_name)
+
+
+
 
 @app.route("/add-trip", methods=['GET', 'POST'])
 def add_trip():
@@ -60,9 +89,13 @@ def add_trip_info(id):
     else:
         return render_template("add_trip_info.html", trip=trip)
 
+
+
+
 @app.route("/add-entry/<int:trip_id>", methods=["GET", "POST"])
 def add_entry(trip_id):
     trip = db.execute("SELECT * FROM trips WHERE id=?", trip_id)[0]
+
     if request.method == 'POST':
         time = datetime.now()
         type = request.form.get("type")
@@ -74,6 +107,8 @@ def add_entry(trip_id):
         return redirect(url_for("trip", id=trip_id))
     else:
         return render_template("add_entry.html", trip=trip)
+
+
 
 @app.route("/edit-entry/<int:id>", methods=["GET", "POST"])
 def edit_entry(id):
@@ -91,10 +126,32 @@ def edit_entry(id):
     else:
         return render_template("edit_entry.html", id=entry['id'], entry=entry)
 
+
+
+
 @app.route("/history")
 def history():
     entries = db.execute("SELECT * FROM entries LEFT JOIN trips ON entries.trip_id = trips.id")
     return render_template("history.html", entries=entries)
+
+
+
+
+@app.route("/upload-image/<int:trip_id>", methods=["GET", "POST"])
+def upload_image(trip_id):
+    trip = db.execute("SELECT * FROM trips WHERE id = ?", trip_id)[0]
+    if request.method == "POST":
+        file = request.files["file"]
+        if file:
+            #change name but preserve file extension
+            file.filename = f"{trip_id}.{file.filename.split('.')[-1]}"
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            return redirect(url_for("trip", id=trip_id))
+        else:
+            print("mistake")
+    else:
+        return render_template("upload_image.html", trip_id=trip_id, trip=trip)
+
 
 
 # run app.py when the file is run

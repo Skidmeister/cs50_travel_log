@@ -35,7 +35,14 @@
 <div>
     <a href="{{ url_for('add_trip_info', id = trip['id']) }}">Add trip info</a>
 </div>
+<h2> Image </h2>
+{% if image %}
+    <img src="{{ url_for('serve_file', filename= image) }}" alt="Trip Image">
+{% endif %}
 
+<div>
+    <a href="{{ url_for('upload_image', trip_id = trip['id']) }}">Upload image</a>
+</div>
 <h2>Entries</h2>
 
 {% for entry in entries %}

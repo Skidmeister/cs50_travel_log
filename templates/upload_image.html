@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Upload image
+{% endblock %}
+
+{% block main %}
+    <p>Upload image for {{ trip['title'] }}</p>
+    <form action="/upload-image/{{ trip['id'] }}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*,.heic,.heif">
+        <button type="submit">Upload</button>
+    </form>
+{% endblock %}

@@ -47,7 +47,6 @@ def trips():
 
 
 
-
 @app.route("/trip/<int:id>")
 def trip(id):
     trip = db.execute("SELECT * FROM trips WHERE id = ?", id)[0]

@@ -12,14 +12,21 @@
         </div>
 
         <div class="mb-3">
-            <input autocomplete="off" class="form-control mx-auto w-auto"
-            name="country" placeholder="Country" type="text">
+            <select class="form-control mx-auto w-auto" name="country">
+                <option value="" disabled selected>Select a country</option>
+                {% for country in countries %}
+                    <option value="{{ country }}">{{ country }}</option>
+                {% endfor %}
+            </select>
         </div>     
 
         <div class="mb-3">
-            <input autocomplete="off" class="form-control mx-auto w-auto"
-            name="city" placeholder="City" type="text">
-        </div>   
+            <label for="city">City:</label>
+            <select class="form-control mx-auto w-auto" name="city" id="city">
+                <option value="" disabled selected>Select a city</option>
+                <!-- Options will be populated dynamically with JavaScript -->
+            </select>
+        </div>
 
         <div class="mb-3">
             <label for="start_date">Start date:</label>

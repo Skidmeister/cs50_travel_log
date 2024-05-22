@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add spot
+{% endblock %}
+
+{% block main %}
+    <p>Add spot to {{ trip['title'] }}</p>
+    <form action="/add-spot/{{ trip['id'] }}" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto"
+            name="words" placeholder="Your w3w..." type="text">
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" class="form-control mx-auto w-auto"
+            name="name" placeholder="Name of the spot" type="text">
+        </div>   
+        <div class="mb-3">
+            <label for="date">Date:</label>
+            <input type="datetime-local" id="date" name="datetime"> 
+            <input type="submit" value="Submit">
+        </div>        
+        <div class="mb-3">
+            <input autocomplete="off" class="form-control mx-auto w-auto"
+            name="description" placeholder="Description of the spot" type="text">
+        </div>
+        <button class="btn btn-primary" type="submit">Add entry</button>
+    </form>
+{% endblock %}

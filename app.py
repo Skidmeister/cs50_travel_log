@@ -5,6 +5,13 @@ from cs50 import SQL
 from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
 
 from datetime import datetime
+import folium
+
+from helpers import get_w3w, get_city_coordinates
+
+import pandas as pd
+
+
 # Configure the app
 app = Flask(__name__)
 
@@ -43,7 +50,19 @@ def index():
 @app.route("/trips")
 def trips():
     trips = db.execute("SELECT * FROM trips")
-    return render_template("trips.html", trips=trips)
+
+    # the map
+    # Create a Folium map centered at a Warsaw-heart of Europe location
+    m = folium.Map(location=[52.2297, 21.0122], zoom_start=5)
+    # Add markers to the map of done trips
+    for trip in trips:
+        city = trip['city'].title()
+        city_coordinates = get_city_coordinates(df, city)
+        if city_coordinates:
+            folium.Marker(location=city_coordinates, popup=trip['title'], tooltip=f"{trip['start_date']}-{trip['end_date']}").add_to(m)
+
+
+    return render_template("trips.html", trips=trips, map=m._repr_html_())
 
 
 
@@ -51,6 +70,7 @@ def trips():
 def trip(id):
     trip = db.execute("SELECT * FROM trips WHERE id = ?", id)[0]
     entries = db.execute("SELECT * FROM entries WHERE trip_id = ?", id)
+    spots = db.execute("SELECT * FROM spots WHERE trip_id = ?", id)
 
     image_name = None
     # IMAGE: check if the image is there
@@ -60,19 +80,36 @@ def trip(id):
         if file_id == str(id):
             image_name = file
 
-    return render_template("trip.html", trip=trip, entries=entries, image=image_name)
+    #map
+    # getting to the csv-database to get the basic coordinates of a city 
+    city = trip['city'].title()
+    city_coordinates = get_city_coordinates(df, city)
+    m = folium.Map(location=city_coordinates, zoom_start=12)
 
+    # Add markers to the map
+    for spot in spots:
+        folium.Marker(
+            location=[spot['latitude'], spot['longitude']], 
+            popup=spot['name'], 
+            tooltip=spot['datetime'],
+            icon=folium.Icon(color="red")
+        ).add_to(m) 
+
+    return render_template("trip.html", trip=trip, entries=entries, image=image_name, spots=spots, map=m._repr_html_())
 
 
 
 @app.route("/add-trip", methods=['GET', 'POST'])
 def add_trip():
+    # get the list of unique countries for html select box
+    countries = df['country'].unique().tolist()
+
     if request.method == "POST":
         title = request.form.get("title")
         country = request.form.get("country")
         city = request.form.get("city")
-        start_date = datetime.strptime(request.form.get("start_date"), "%Y-%m-%d")
-        end_date = datetime.strptime(request.form.get("end_date"), "%Y-%m-%d")
+        start_date = datetime.strptime(request.form.get("start_date"), "%Y-%m-%d").date()
+        end_date = datetime.strptime(request.form.get("end_date"), "%Y-%m-%d").date()
 
 
         #add to database
@@ -80,7 +117,7 @@ def add_trip():
         return redirect("trips")
     
     else:
-        return render_template("add_trip.html")
+        return render_template("add_trip.html", countries = countries)
     
 
 @app.route("/add-trip-info/<int:id>", methods=["GET", "POST"])
@@ -162,9 +199,39 @@ def upload_image(trip_id):
         return render_template("upload_image.html", trip_id=trip_id, trip=trip)
 
 
+@app.route("/add-spot/<int:trip_id>", methods=["GET", "POST"])
+def add_spot(trip_id):
+    trip = db.execute("SELECT * FROM trips WHERE id = ?", trip_id)[0]
+    if request.method == "POST":
+        name = request.form.get("name")
+        description = request.form.get("description")
+        time = request.form.get("datetime")
+        words = request.form.get("words")
+        w3w_dict = get_w3w(words)
+        print(w3w_dict)
+        country = w3w_dict['country']
+        nearest_place = w3w_dict['nearestPlace']
+        longitude = w3w_dict['coordinates']['lng']
+        latitude = w3w_dict['coordinates']['lat']
+
+        # add information to database
+        db.execute("INSERT INTO spots (w3s, datetime, name, description, longitude, latitude, country, nearest_place, trip_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", words, time, name, description, longitude, latitude, country, nearest_place, trip_id)
+
+        return redirect(url_for("trip", id=trip['id']))
+
+    else:
+        return render_template("add_spot.html", trip_id=trip_id, trip=trip)
+
+
+
+
 
 # run app.py when the file is run
 if __name__ == "__main__":
     if not os.path.exists("travel_log.db"):
         db = sqlite3.connect('travel_log.db')
+    
+    df = pd.read_csv('worldcities.csv')
+    
+    # add if clause about the what3words api
     app.run(debug = True)

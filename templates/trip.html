@@ -43,6 +43,34 @@
 <div>
     <a href="{{ url_for('upload_image', trip_id = trip['id']) }}">Upload image</a>
 </div>
+<h2>Spots</h2>
+{% if spots %}
+    <table>
+        <th>Name</th>
+        <th>Time</th>
+        <th>Longitude</th>
+        <th>Latitude</th>
+        <th>Description</th>
+        {% for spot in spots %}
+            <tr>
+                <td> {{ spot['name'] }}</td>
+                <td> {{ spot['datetime'] }} </td>
+                <td> {{ spot['longitude'] }}</td>
+                <td> {{ spot['latitude'] }} </td>
+                <td> {{ spot['description'] }} </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}
+<div>
+    <a href="{{ url_for('add_spot', trip_id = trip['id']) }}">Add spot</a>
+</div>
+
+<!-- Include Folium JavaScript -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Display the map -->
+<div id="map">{{ map|safe }}</div>
+
 <h2>Entries</h2>
 
 {% for entry in entries %}

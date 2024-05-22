@@ -51,3 +51,7 @@
     flex: 0 0 calc(33.33% - 20px); /* Set width of each card */
     max-width: calc(33.33% - 20px); /* Set maximum width of each card */
 }
+
+  #map {
+    height: 400px;
+}

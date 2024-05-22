@@ -25,5 +25,10 @@ Trips!
         </tr>
     {% endfor %}
 </table>
+<!-- Include Folium JavaScript -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Display the map -->
+<div id="map">{{ map|safe }}</div>
+
 
 {% endblock %}

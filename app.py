@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory
+from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory, jsonify
 
 from datetime import datetime
 import folium
@@ -97,7 +97,12 @@ def trip(id):
 
     return render_template("trip.html", trip=trip, entries=entries, image=image_name, spots=spots, map=m._repr_html_())
 
-
+@app.route("/get-cities")
+def get_cities():
+    """Fetches cities based on the selected country and returns  list of cities as a JSON response"""
+    country = request.args.get('country')
+    cities = df[df['country'] == country]['city'].tolist()
+    return cities
 
 @app.route("/add-trip", methods=['GET', 'POST'])
 def add_trip():

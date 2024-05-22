@@ -12,7 +12,7 @@
         </div>
 
         <div class="mb-3">
-            <select class="form-control mx-auto w-auto" name="country">
+            <select class="form-control mx-auto w-auto" name="country" id="country">
                 <option value="" disabled selected>Select a country</option>
                 {% for country in countries %}
                     <option value="{{ country }}">{{ country }}</option>
@@ -27,6 +27,27 @@
                 <!-- Options will be populated dynamically with JavaScript -->
             </select>
         </div>
+        <script>
+            document.getElementById('country').addEventListener('change', function() {
+                var country = this.value;
+
+                // Make AJAX request to fetch cities for selected country
+                fetch('/get-cities?country=' + country)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update options in city select menu
+                        var citySelect = document.getElementById('city');
+                        citySelect.innerHTML = '';
+                        data.forEach(city => {
+                            var option = document.createElement('option');
+                            option.value = city;
+                            option.textContent = city;
+                            citySelect.appendChild(option);
+                        });
+                    });
+            });
+
+        </script>
 
         <div class="mb-3">
             <label for="start_date">Start date:</label>

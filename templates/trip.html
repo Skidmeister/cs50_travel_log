@@ -66,11 +66,6 @@
     <a href="{{ url_for('add_spot', trip_id = trip['id']) }}">Add spot</a>
 </div>
 
-<!-- Include Folium JavaScript -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Display the map -->
-<div id="map">{{ map|safe }}</div>
-
 <h2>Entries</h2>
 
 {% for entry in entries %}
@@ -87,6 +82,10 @@
 <div>
     <a href="{{ url_for('add_entry', trip_id = trip['id']) }}">Add entry</a>
 </div>
+<!-- Include Folium JavaScript -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<!-- Display the map -->
+<div id="map">{{ map|safe }}</div>
 
 
 {% endblock %}

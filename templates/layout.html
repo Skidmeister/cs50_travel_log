@@ -59,20 +59,21 @@
             {% block main %}{% endblock %}
         </main>
 
-        <footer class="mb-5">
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Adapted from https://stackoverflow.com/a/10162353 and CS50
-                    const html = '<!DOCTYPE ' +
-                    document.doctype.name +
-                    (document.doctype.publicId ? ' PUBLIC "' + document.doctype.publicId + '"' : '') +
-                    (!document.doctype.publicId && document.doctype.systemId ? ' SYSTEM' : '') +
-                    (document.doctype.systemId ? ' "' + document.doctype.systemId + '"' : '') +
-                    '>\n' + document.documentElement.outerHTML;
-                    document.querySelector('form[action="https://validator.w3.org/check"] > input[name="fragment"]').value = html;
-                });
-            </script>
+        <footer class="mb-5 text-center">
+            <div class="container">
+                <span class="text-muted">© 2024 Travel Log by Mikołaj Cygan. All rights reserved.</span>
+                <div class="mt-2">
+                    <span class="text-muted">Powered by:</span>
+                    <div>
+                        <a href="https://what3words.com/" class="text-muted">What3Words</a>
+                    </div>
+                    <div>
+                        <a href="https://simplemaps.com/data/world-cities" class="text-muted">Simplemaps</a>
+                    </div>
+                </div>
+            </div>
         </footer>
+        
 
     </body>
 

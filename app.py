@@ -32,7 +32,7 @@ def serve_file(filename):
 
 @app.route("/")
 def index():
-    trips = db.execute("SELECT id, start_date, end_date, country, city, title FROM trips")
+    trips = db.execute("SELECT id, start_date, end_date, country, city, title FROM trips ORDER BY end_date DESC")
     
     #prepare a dictionary with images where key is trip id and value is the name of the file
     images = [file for file in os.listdir('static/uploads') if file !=".DS_Store"]
@@ -49,7 +49,7 @@ def index():
 
 @app.route("/trips")
 def trips():
-    trips = db.execute("SELECT * FROM trips")
+    trips = db.execute("SELECT * FROM trips ORDER BY end_date DESC")
 
     # the map
     # Create a Folium map centered at a Warsaw-heart of Europe location
@@ -69,8 +69,8 @@ def trips():
 @app.route("/trip/<int:id>")
 def trip(id):
     trip = db.execute("SELECT * FROM trips WHERE id = ?", id)[0]
-    entries = db.execute("SELECT * FROM entries WHERE trip_id = ?", id)
-    spots = db.execute("SELECT * FROM spots WHERE trip_id = ?", id)
+    entries = db.execute("SELECT * FROM entries WHERE trip_id = ? ORDER BY datetime DESC", id)
+    spots = db.execute("SELECT * FROM spots WHERE trip_id = ? ORDER By datetime DESC", id)
 
     image_name = None
     # IMAGE: check if the image is there
@@ -83,7 +83,9 @@ def trip(id):
     #map
     # getting to the csv-database to get the basic coordinates of a city 
     city = trip['city'].title()
+    print(city)
     city_coordinates = get_city_coordinates(df, city)
+    print(city_coordinates)
     m = folium.Map(location=city_coordinates, zoom_start=12)
 
     # Add markers to the map

@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Generate Postcard
+{% endblock %}
+
+{% block main %}
+    <h1>Create Your Postcard</h1>
+    <form action="/generate-postcard/{{ trip['id'] }}" method="POST">
+        <label for="recipient">Recipient:</label>
+        <input type="text" id="recipient" name="recipient" required><br><br>
+        
+        <label for="sender">Sender:</label>
+        <input type="text" id="sender" name="sender" required><br><br>
+
+        <label for="greeting">Greeting:</label>
+        <input type="text" id="greeting" name="greeting" required><br><br>
+
+        <label for="message">Message:</label>
+        <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+
+        <label for="regards">Regards:</label>
+        <input type="text" id="regards" name="regards" required><br><br>
+
+        <label for="signature">Signature:</label>
+        <input type="text" id="signature" name="signature" required><br><br>
+
+        <input type="submit" value="Generate Postcard">
+    </form>
+{% endblock %}

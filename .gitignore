@@ -3,3 +3,6 @@
 /static/uploads
 travel_log.db
 brulion.py
+/postcards
+*.png
+*.ttf

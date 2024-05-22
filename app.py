@@ -7,7 +7,7 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from datetime import datetime
 import folium
 
-from helpers import get_w3w, get_city_coordinates
+from helpers import get_w3w, get_city_coordinates, create_postcard
 
 import pandas as pd
 
@@ -224,11 +224,31 @@ def add_spot(trip_id):
         # add information to database
         db.execute("INSERT INTO spots (w3s, datetime, name, description, longitude, latitude, country, nearest_place, trip_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", words, time, name, description, longitude, latitude, country, nearest_place, trip_id)
 
-        return redirect(url_for("trip", id=trip['id']))
+        return redirect(url_for("trip", id=trip_id))
 
     else:
         return render_template("add_spot.html", trip_id=trip_id, trip=trip)
 
+
+@app.route("/generate-postcard/<int:trip_id>", methods = ["GET", "POST"])
+def generate_postcard(trip_id):
+    """Generates a pdf postcard"""
+    trip = db.execute("SELECT * FROM trips WHERE id = ?", trip_id)[0]
+    if request.method == "POST":
+        recipient = request.form.get("recipient")
+        message = request.form.get("message")
+        sender = request.form.get("sender")
+        greeting = request.form.get("greeting")
+        regards = request.form.get("regards")
+        signature = request.form.get("signature")
+
+
+        create_postcard(recipient, sender, greeting, message, regards, signature, trip)
+
+        return redirect(url_for("trip", id=trip['id']))
+    
+    else:
+        return render_template("generate_postcard.html", trip_id = trip['id'], trip=trip)
 
 
 

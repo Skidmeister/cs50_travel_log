@@ -43,6 +43,10 @@
 <div>
     <a href="{{ url_for('upload_image', trip_id = trip['id']) }}">Upload image</a>
 </div>
+<div>
+    <a href="{{ url_for('generate_postcard', trip_id = trip['id']) }}">Generate postcard</a>
+</div>
+
 <h2>Spots</h2>
 {% if spots %}
     <table>

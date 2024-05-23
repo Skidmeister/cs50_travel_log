@@ -76,7 +76,7 @@
     <div class="card" style="width: 100%">
         <div class="card-body">
           <h5 class="card-title">{{ entry['datetime'] }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted"> Mood: {{entry['mood']}}</h6>
+          <h6 class="card-subtitle mb-2 text-muted"> Mood: {{emojis[entry['mood']]}}</h6>
           <p class="card-text">{{ entry['text'] }}</p>
           <a href="{{ url_for('edit_entry', id=entry['id']) }}" class="card-link">Edit entry</a>
           <p>{{ entry['type'] }}</p>

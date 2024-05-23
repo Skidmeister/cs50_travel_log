@@ -11,6 +11,13 @@ from helpers import get_w3w, get_city_coordinates, create_postcard
 
 import pandas as pd
 
+emojis = {1:'😩',
+          2:'😔',
+          3:'😐',
+          4:'😊',
+          5:'😃',
+          6:'🤩',
+          }
 
 # Configure the app
 app = Flask(__name__)
@@ -89,8 +96,15 @@ def trip(id):
     city = trip['city'].title()
     print(city)
     city_coordinates = get_city_coordinates(df, city)
-    print(city_coordinates)
-    m = folium.Map(location=city_coordinates, zoom_start=12)
+    # if city coordinates in database get those for initial zoom on the map
+    if city_coordinates:
+        m = folium.Map(location=city_coordinates, zoom_start=12)
+    # if unavailable get coordinates of the first spot that was added to the spots
+    elif spots:
+        m = folium.Map(location=[spots[-1]['latitude'], spots[-1]['longitude']], zoom_start=12)
+    # if spots are not available either, start with the deafault map of Europe
+    else:
+        m = folium.Map(location=[52.2297, 21.0122], zoom_start=5)
 
     # Add markers to the map
     for spot in spots:
@@ -101,7 +115,7 @@ def trip(id):
             icon=folium.Icon(color="red")
         ).add_to(m) 
 
-    return render_template("trip.html", trip=trip, entries=entries, image=image_name, spots=spots, map=m._repr_html_())
+    return render_template("trip.html", trip=trip, entries=entries, image=image_name, spots=spots, map=m._repr_html_(), emojis=emojis)
 
 @app.route("/get-cities")
 def get_cities():
@@ -163,7 +177,7 @@ def add_entry(trip_id):
         id = db.execute("INSERT INTO entries (trip_id, datetime, type, mood, text) VALUES(?, ?, ?, ?, ?)", trip_id, time, type, mood, text)
         return redirect(url_for("trip", id=trip_id))
     else:
-        return render_template("add_entry.html", trip=trip)
+        return render_template("add_entry.html", trip=trip, emojis=emojis)
 
 
 
@@ -189,7 +203,7 @@ def edit_entry(id):
 @app.route("/history")
 def history():
     entries = db.execute("SELECT * FROM entries LEFT JOIN trips ON entries.trip_id = trips.id")
-    return render_template("history.html", entries=entries)
+    return render_template("history.html", entries=entries, emojis=emojis)
 
 
 

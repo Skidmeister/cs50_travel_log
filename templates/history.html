@@ -20,7 +20,7 @@ History
             <td> {{ entry['datetime'] }}</td>
             <td> {{ entry['title'] }} </td>
             <td> {{ entry['text'] }}</td>
-            <td> {{ entry['mood'] }} </td>
+            <td> {{ emojis[entry['mood']] }} </td>
             <td> {{ entry['type'] }} </td>
         </tr>
     {% endfor %}

@@ -196,7 +196,19 @@ def edit_entry(id):
     else:
         return render_template("edit_entry.html", id=entry['id'], entry=entry)
 
-
+@app.route("/delete-entry/<int:id>", methods=["GET", "POST"])
+def delete_entry(id):
+    entry = db.execute("SELECT * FROM entries WHERE id = ?", id)[0]
+    if request.method == "POST":
+        if request.form.get("confirm") == 'yes':
+            db.execute("DELETE FROM entries WHERE id=?", id)
+            flash(f"Successfully deleted entry from {entry['datetime']}.")
+        else:
+            flash("Deletion cancelled.")
+        return redirect(url_for("trip", id=entry['trip_id']))
+    
+    else:
+        return render_template("delete_entry.html", id=id, entry=entry)
 
 
 @app.route("/history")

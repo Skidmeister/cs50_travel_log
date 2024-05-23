@@ -1,101 +1,104 @@
 {% extends "layout.html" %}
 
 {% block title %}
-
 {{ trip['title'] }}
-
 {% endblock %}
 
-
 {% block main %}
-
-<table>
-    <th>Trip title</th>
-    <th>Start date</th>
-    <th>End date</th>
-    <th>Country</th>
-    <th>City</th>
-    <th>Transportation mode</th>
-    <th>Transportation cost</th>
-    <th>Accomodation type</th>
-    <th>Accomodation cost</th>
-    <tr>
-        <td> {{ trip['title'] }}</td>
-        <td> {{ trip['start_date'] }} </td>
-        <td> {{ trip['end_date'] }}</td>
-        <td> {{ trip['country'] }} </td>
-        <td> {{ trip['city'] }} </td>
-        <td> {{ trip['transportation_mode'] }} </td>
-        <td> {{ trip['transportation_cost'] }}</td>
-        <td> {{ trip['accomodation_type'] }} </td>
-        <td> {{ trip['accomodation_cost'] }} </td>
-    </tr>
-</table>
-
-<div>
-    <a href="{{ url_for('add_trip_info', id = trip['id']) }}">Add trip info</a>
-</div>
-
-{% if image %}
-    <img src="{{ url_for('serve_file', filename= image) }}" alt="Trip Image" class="trip_size">
-    <div>
-        <a href="{{ url_for('upload_image', trip_id = trip['id']) }}">Change image</a>
-    </div>
-{% else %}
-    <div>
-        <a href="{{ url_for('upload_image', trip_id = trip['id']) }}">Upload image</a>
-    </div>
-{% endif %}
-
-
-<div>
-    <a href="{{ url_for('generate_postcard', trip_id = trip['id']) }}">Generate postcard</a>
-</div>
-
-<h2>Spots</h2>
-{% if spots %}
-    <table>
-        <th>Name</th>
-        <th>Time</th>
-        <th>Longitude</th>
-        <th>Latitude</th>
-        <th>Description</th>
-        {% for spot in spots %}
-            <tr>
-                <td> {{ spot['name'] }}</td>
-                <td> {{ spot['datetime'] }} </td>
-                <td> {{ spot['longitude'] }}</td>
-                <td> {{ spot['latitude'] }} </td>
-                <td> {{ spot['description'] }} </td>
-            </tr>
-        {% endfor %}
-    </table>
-{% endif %}
-<div>
-    <a href="{{ url_for('add_spot', trip_id = trip['id']) }}">Add spot</a>
-</div>
-
-<h2>Entries</h2>
-
-{% for entry in entries %}
-    <div class="card" style="width: 100%">
-        <div class="card-body">
-          <h5 class="card-title">{{ entry['datetime'] }}</h5>
-          <h6 class="card-subtitle mb-2 text-muted"> Mood: {{emojis[entry['mood']]}}</h6>
-          <p class="card-text">{{ entry['text'] }}</p>
-          <a href="{{ url_for('edit_entry', id=entry['id']) }}" class="card-link">Edit entry</a>
-          <p>{{ entry['type'] }}</p>
+<div class="container my-4">
+    <div class="row">
+        <!-- Trip Information Box -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ trip['title'] }}</h5>
+                    <p class="card-text"><strong>Start date:</strong> {{ trip['start_date'] }}</p>
+                    <p class="card-text"><strong>End date:</strong> {{ trip['end_date'] }}</p>
+                    <p class="card-text"><strong>Country:</strong> {{ trip['country'] }}</p>
+                    <p class="card-text"><strong>City:</strong> {{ trip['city'] }}</p>
+                    <p class="card-text"><strong>Transportation mode:</strong> {{ trip['transportation_mode'] }}</p>
+                    <p class="card-text"><strong>Transportation cost:</strong> {{ trip['transportation_cost'] }}</p>
+                    <p class="card-text"><strong>Accomodation type:</strong> {{ trip['accomodation_type'] }}</p>
+                    <p class="card-text"><strong>Accomodation cost:</strong> {{ trip['accomodation_cost'] }}</p>
+                    <a href="{{ url_for('generate_postcard', trip_id = trip['id']) }}" class="btn btn-primary mt-3">Generate postcard</a>
+                </div>
+            </div>
+        </div>
+        <!-- Image or Upload Button -->
+        <div class="col-md-6 text-center">
+            {% if image %}
+                <img src="{{ url_for('serve_file', filename= image) }}" alt="Trip Image" class="img-fluid">
+                <div>
+                    <a href="{{ url_for('upload_image', trip_id = trip['id']) }}" class="btn btn-secondary mt-3">Change image</a>
+                </div>
+            {% else %}
+                <a href="{{ url_for('upload_image', trip_id = trip['id']) }}" class="btn btn-primary btn-lg mt-5">Upload image</a>
+            {% endif %}
         </div>
     </div>
-{% endfor %}
-<div>
-    <a href="{{ url_for('add_entry', trip_id = trip['id']) }}">Add entry</a>
+    
+    <div class="row mt-5">
+        <div class="col">
+            <h2>Spots</h2>
+            {% if spots %}
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Time</th>
+                            <th>Longitude</th>
+                            <th>Latitude</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for spot in spots %}
+                            <tr>
+                                <td>{{ spot['name'] }}</td>
+                                <td>{{ spot['datetime'] }}</td>
+                                <td>{{ spot['longitude'] }}</td>
+                                <td>{{ spot['latitude'] }}</td>
+                                <td>{{ spot['description'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            <div class="text-center">
+                <a href="{{ url_for('add_spot', trip_id = trip['id']) }}" class="btn btn-primary">Add spot</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h2>Entries</h2>
+            {% for entry in entries %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ entry['datetime'] }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Mood: {{ emojis[entry['mood']] }}</h6>
+                        <p class="card-text">{{ entry['text'] }}</p>
+                        <a href="{{ url_for('edit_entry', id=entry['id']) }}" class="card-link">Edit</a>
+                        <a href="{{ url_for('delete_entry', id=entry['id']) }}" class="card-link">Delete</a>
+                        <p>{{ entry['type'] }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="text-center">
+                <a href="{{ url_for('add_entry', trip_id = trip['id']) }}" class="btn btn-primary">Add entry</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h2>Map of spots</h2>
+            <!-- Include Folium JavaScript -->
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+            <!-- Display the map -->
+            <div id="map">{{ map|safe }}</div>
+        </div>
+    </div>
 </div>
-<h2>Map of spots</h2>
-<!-- Include Folium JavaScript -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Display the map -->
-<div id="map">{{ map|safe }}</div>
-
-
 {% endblock %}

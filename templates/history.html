@@ -1,31 +1,38 @@
 {% extends "layout.html" %}
 
 {% block title %}
-
 History
-
 {% endblock %}
 
-
 {% block main %}
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Time</th>
+                        <th>Trip title</th>
+                        <th>Mood</th>
+                        <th>Type</th>
+                        <th>Text</th>
 
-<table>
-    <th>Time</th>
-    <th>Trip tile</th>
-    <th>Text</th>
-    <th>Mood</th>
-    <th>Type</th>
-    {% for entry in entries %}
-        <tr>
-            <td> {{ entry['datetime'] }}</td>
-            <td> {{ entry['title'] }} </td>
-            <td> {{ entry['text'] }}</td>
-            <td> {{ emojis[entry['mood']] }} </td>
-            <td> {{ entry['type'] }} </td>
-        </tr>
-    {% endfor %}
-</table>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                        <tr>
+                            <td>{{ entry['datetime'] }}</td>
+                            <td>{{ entry['title'] }}</td>
+                            <td>{{ emojis[entry['mood']] }}</td>
+                            <td>{{ entry['type'] }}</td>
+                            <td>{{ entry['text'] }}</td>
 
-
-
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

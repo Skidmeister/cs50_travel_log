@@ -188,7 +188,7 @@ def edit_entry(id):
         db.execute("UPDATE entries SET type = ?, mood = ?, text = ?, last_edit = ? WHERE id = ?", type, mood, text, time_edited, id)
         return redirect(url_for("trip", id=entry['trip_id']))
     else:
-        return render_template("edit_entry.html", id=entry['id'], entry=entry)
+        return render_template("edit_entry.html", id=entry['id'], entry=entry, emojis=emojis)
 
 @app.route("/delete-entry/<int:id>", methods=["GET", "POST"])
 def delete_entry(id):
@@ -215,15 +215,17 @@ def delete_trip(id):
             # deletions in the database
             db.execute("DELETE FROM entries WHERE trip_id=?", trip['id'])
             db.execute("DELETE FROM spots WHERE trip_id=?", trip['id'])
-            db.execute("DELETE FROM trips where id=?", id)
+            db.execute("DELETE FROM trips WHERE id = ?", id)
             image_name = check_image_present(trip_id=id)          
             if image_name:
                 os.remove(f"static/uploads/{image_name}")
             # feedback for the user
             flash(f"Successfully deleted {trip['title']} trip.")
+            return redirect(url_for("trips"))
+        
         else:
             flash("Deletion cancelled.")
-        return redirect(url_for("trip", id=trip['id']))
+            return redirect(url_for("trip", id=trip['id']))
     
     else:
         return render_template("delete_trip.html", id=id, trip=trip)

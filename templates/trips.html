@@ -1,34 +1,44 @@
 {% extends "layout.html" %}
 
 {% block title %}
-
-Trips!
-
+    Trips!
 {% endblock %}
 
-
 {% block main %}
+<h1>Trips</h1>
 
-<table>
-    <th>Trip title</th>
-    <th>Start date</th>
-    <th>End date</th>
-    <th>Country</th>
-    <th>City</th>
-    {% for trip in trips %}
-        <tr>
-            <td><a href="{{ url_for('trip', id=trip['id']) }}">{{ trip['title'] }}</a></td>
-            <td> {{ trip['start_date'] }} </td>
-            <td>{{ trip['end_date'] }}</td>
-            <td> {{ trip['country'] }} </td>
-            <td> {{ trip['city'] }} </td>
-        </tr>
-    {% endfor %}
-</table>
-<!-- Include Folium JavaScript -->
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<!-- Display the map -->
-<div id="map">{{ map|safe }}</div>
-
-
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Trip title</th>
+                        <th>Start date</th>
+                        <th>End date</th>
+                        <th>Country</th>
+                        <th>City</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trip in trips %}
+                        <tr>
+                            <td><a href="{{ url_for('trip', id=trip['id']) }}">{{ trip['title'] }}</a></td>
+                            <td>{{ trip['start_date'] }}</td>
+                            <td>{{ trip['end_date'] }}</td>
+                            <td>{{ trip['country'] }}</td>
+                            <td>{{ trip['city'] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <a href="{{ url_for('add_trip') }}" class="btn btn-primary btn-lg mt-3">Add trip</a>
+    <p></p>
+    <!-- Include Folium JavaScript -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Display the map -->
+    <div id="map">{{ map|safe }}</div>
+</div>
 {% endblock %}

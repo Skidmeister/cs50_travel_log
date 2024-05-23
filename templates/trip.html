@@ -16,11 +16,15 @@
                     <p class="card-text"><strong>End date:</strong> {{ trip['end_date'] }}</p>
                     <p class="card-text"><strong>Country:</strong> {{ trip['country'] }}</p>
                     <p class="card-text"><strong>City:</strong> {{ trip['city'] }}</p>
+                    <p></p>
+                    <p class="card-text">Secondary trip info</p>
                     <p class="card-text"><strong>Transportation mode:</strong> {{ trip['transportation_mode'] }}</p>
-                    <p class="card-text"><strong>Transportation cost:</strong> {{ trip['transportation_cost'] }}</p>
+                    <p class="card-text"><strong>Transportation cost (Euro):</strong> {{ trip['transportation_cost'] }}</p>
                     <p class="card-text"><strong>Accomodation type:</strong> {{ trip['accomodation_type'] }}</p>
-                    <p class="card-text"><strong>Accomodation cost:</strong> {{ trip['accomodation_cost'] }}</p>
-                    <a href="{{ url_for('generate_postcard', trip_id = trip['id']) }}" class="btn btn-success mt-3">Generate postcard</a>
+                    <p class="card-text"><strong>Accomodation cost (Euro):</strong> {{ trip['accomodation_cost'] }}</p>
+                    <a href="{{ url_for('add_trip_info', id = trip['id']) }}" class="btn btn-primary mt-3">Edit trip info</a>  
+                    <p></p> 
+                    <a href="{{ url_for('generate_postcard', trip_id = trip['id']) }}" class="btn btn-success mt-3">Generate postcard 📧</a>
                     <p></p>
                     <a href="{{ url_for('delete_trip', id = trip['id']) }}" class="btn btn-danger mt-3">Delete trip</a>
                 </div>

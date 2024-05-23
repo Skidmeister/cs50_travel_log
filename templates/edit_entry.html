@@ -5,12 +5,10 @@
 {% endblock %}
 
 {% block main %}
-    <p>Edit entry</p>
+    <h3>Edit entry</h3>
     <form action="/edit-entry/{{ entry['id'] }}" method="post">
         <div class="mb-3">
-            <textarea autocomplete="off" autofocus class="form-control mx-auto col-md-6" id="auto-expanding-textarea" name="text" placeholder="Type text here..." rows="3">
-                {{ entry['text'] }}
-            </textarea>
+            <textarea autocomplete="off" autofocus class="form-control mx-auto col-md-6" id="auto-expanding-textarea" name="text" placeholder="Type text here..." rows="3">{{ entry['text'] }}</textarea>
         </div>
         
         <script>
@@ -31,14 +29,15 @@
         </select>
         
         <select name="mood">
-            <option disabled selected value="">Mood 1-6</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>        
+            <option disabled selected value="">Mood</option>
+            <option value="1" {% if entry['mood'] == 1 %} selected {% endif %}>{{ emojis[1] }}</option>
+            <option value="2" {% if entry['mood'] == 2 %} selected {% endif %}>{{ emojis[2] }}</option>
+            <option value="3" {% if entry['mood'] == 3 %} selected {% endif %}>{{ emojis[3] }}</option>
+            <option value="4" {% if entry['mood'] == 4 %} selected {% endif %}>{{ emojis[4] }}</option>
+            <option value="5" {% if entry['mood'] == 5 %} selected {% endif %}>{{ emojis[5] }}</option>
+            <option value="6" {% if entry['mood'] == 6 %} selected {% endif %}>{{ emojis[6] }}</option>        
         </select>
+        <p></p>
         <button class="btn btn-primary" type="submit">Submit edit</button>
     </form>
 {% endblock %}

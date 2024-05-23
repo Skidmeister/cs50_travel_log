@@ -7,7 +7,7 @@ from flask import Flask, flash, redirect, render_template, request, url_for, sen
 from datetime import datetime
 import folium
 
-from helpers import get_w3w, get_city_coordinates, create_postcard
+from helpers import get_w3w, get_city_coordinates, create_postcard, check_image_present
 
 import pandas as pd
 
@@ -83,13 +83,7 @@ def trip(id):
     entries = db.execute("SELECT * FROM entries WHERE trip_id = ? ORDER BY datetime DESC", id)
     spots = db.execute("SELECT * FROM spots WHERE trip_id = ? ORDER By datetime DESC", id)
 
-    image_name = None
-    # IMAGE: check if the image is there
-    for file in os.listdir('static/uploads'):
-        file_id, file_ext = os.path.splitext(file)
-
-        if file_id == str(id):
-            image_name = file
+    image_name = check_image_present(trip_id=id)
 
     #map
     # getting to the csv-database to get the basic coordinates of a city 
@@ -198,6 +192,7 @@ def edit_entry(id):
 
 @app.route("/delete-entry/<int:id>", methods=["GET", "POST"])
 def delete_entry(id):
+    """deletes entry from the database"""
     entry = db.execute("SELECT * FROM entries WHERE id = ?", id)[0]
     if request.method == "POST":
         if request.form.get("confirm") == 'yes':
@@ -210,6 +205,29 @@ def delete_entry(id):
     else:
         return render_template("delete_entry.html", id=id, entry=entry)
 
+
+@app.route("/delete-trip/<int:id>", methods=["GET", "POST"])
+def delete_trip(id):
+    """deletes trip from the database"""
+    trip = db.execute("SELECT * FROM trips WHERE id = ?", id)[0]
+    if request.method == "POST":
+        if request.form.get("confirm") == 'yes':
+            # deletions in the database
+            db.execute("DELETE FROM entries WHERE trip_id=?", trip['id'])
+            db.execute("DELETE FROM spots WHERE trip_id=?", trip['id'])
+            db.execute("DELETE FROM trips where id=?", id)
+            image_name = check_image_present(trip_id=id)          
+            if image_name:
+                os.remove(f"static/uploads/{image_name}")
+            # feedback for the user
+            flash(f"Successfully deleted {trip['title']} trip.")
+        else:
+            flash("Deletion cancelled.")
+        return redirect(url_for("trip", id=trip['id']))
+    
+    else:
+        return render_template("delete_trip.html", id=id, trip=trip)
+    
 
 @app.route("/history")
 def history():
@@ -262,21 +280,24 @@ def add_spot(trip_id):
 def generate_postcard(trip_id):
     """Generates a pdf postcard"""
     trip = db.execute("SELECT * FROM trips WHERE id = ?", trip_id)[0]
-    if request.method == "POST":
-        recipient = request.form.get("recipient")
-        message = request.form.get("message")
-        sender = request.form.get("sender")
-        greeting = request.form.get("greeting")
-        regards = request.form.get("regards")
-        signature = request.form.get("signature")
+    if check_image_present(trip_id=trip_id):
+        if request.method == "POST":
+            recipient = request.form.get("recipient")
+            message = request.form.get("message")
+            sender = request.form.get("sender")
+            greeting = request.form.get("greeting")
+            regards = request.form.get("regards")
+            signature = request.form.get("signature")
 
 
-        create_postcard(recipient, sender, greeting, message, regards, signature, trip)
-        flash('The postcard has been successfully generated and can be found in the "postcards" folder.')
-        return redirect(url_for("trip", id=trip['id']))
-    
+            create_postcard(recipient, sender, greeting, message, regards, signature, trip)
+            flash('The postcard has been successfully generated and can be found in the "postcards" folder.')
+            return redirect(url_for("trip", id=trip['id']))
+        
+        else:
+            return render_template("generate_postcard.html", trip_id = trip['id'], trip=trip)
     else:
-        return render_template("generate_postcard.html", trip_id = trip['id'], trip=trip)
+        return apology("Unfortunately it is impossible to generate postcard without an image. Upload image to this trip first.")
     
 
 # run app.py when the file is run

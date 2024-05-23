@@ -6,10 +6,10 @@
 
 {% block main %}
 <div class="container my-4">
-    <div class="row">
-        <!-- Trip Information Box -->
-        <div class="col-md-6">
-            <div class="card">
+    <div class="row justify-content-center">
+        <!-- Trip Information and Image -->
+        <div class="col-md-8">
+            <div class="card mb-4 text-center">
                 <div class="card-body">
                     <h5 class="card-title">{{ trip['title'] }}</h5>
                     <p class="card-text"><strong>Start date:</strong> {{ trip['start_date'] }}</p>
@@ -20,20 +20,43 @@
                     <p class="card-text"><strong>Transportation cost:</strong> {{ trip['transportation_cost'] }}</p>
                     <p class="card-text"><strong>Accomodation type:</strong> {{ trip['accomodation_type'] }}</p>
                     <p class="card-text"><strong>Accomodation cost:</strong> {{ trip['accomodation_cost'] }}</p>
-                    <a href="{{ url_for('generate_postcard', trip_id = trip['id']) }}" class="btn btn-primary mt-3">Generate postcard</a>
+                    <a href="{{ url_for('generate_postcard', trip_id = trip['id']) }}" class="btn btn-success mt-3">Generate postcard</a>
+                    <p></p>
+                    <a href="{{ url_for('delete_trip', id = trip['id']) }}" class="btn btn-danger mt-3">Delete trip</a>
                 </div>
             </div>
+            <!-- Image or Upload Button -->
+            <div class="text-center">
+                {% if image %}
+                    <img src="{{ url_for('serve_file', filename= image) }}" alt="Trip Image" class="img-fluid mb-3">
+                    <div>
+                        <a href="{{ url_for('upload_image', trip_id = trip['id']) }}" class="btn btn-secondary">Change image</a>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('upload_image', trip_id = trip['id']) }}" class="btn btn-primary btn-lg mt-3">Upload image</a>
+                {% endif %}
+            </div>
         </div>
-        <!-- Image or Upload Button -->
-        <div class="col-md-6 text-center">
-            {% if image %}
-                <img src="{{ url_for('serve_file', filename= image) }}" alt="Trip Image" class="img-fluid">
-                <div>
-                    <a href="{{ url_for('upload_image', trip_id = trip['id']) }}" class="btn btn-secondary mt-3">Change image</a>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col">
+            <h2>Entries</h2>
+            {% for entry in entries %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ entry['datetime'] }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Mood: {{ emojis[entry['mood']] }}</h6>
+                        <p class="card-text">{{ entry['text'] }}</p>
+                        <a href="{{ url_for('edit_entry', id=entry['id']) }}" class="card-link">Edit</a>
+                        <a href="{{ url_for('delete_entry', id=entry['id']) }}" class="card-link">Delete</a>
+                        <p>{{ entry['type'] }}</p>
+                    </div>
                 </div>
-            {% else %}
-                <a href="{{ url_for('upload_image', trip_id = trip['id']) }}" class="btn btn-primary btn-lg mt-5">Upload image</a>
-            {% endif %}
+            {% endfor %}
+            <div class="text-center">
+                <a href="{{ url_for('add_entry', trip_id = trip['id']) }}" class="btn btn-primary">Add entry</a>
+            </div>
         </div>
     </div>
     
@@ -66,27 +89,6 @@
             {% endif %}
             <div class="text-center">
                 <a href="{{ url_for('add_spot', trip_id = trip['id']) }}" class="btn btn-primary">Add spot</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-5">
-        <div class="col">
-            <h2>Entries</h2>
-            {% for entry in entries %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ entry['datetime'] }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Mood: {{ emojis[entry['mood']] }}</h6>
-                        <p class="card-text">{{ entry['text'] }}</p>
-                        <a href="{{ url_for('edit_entry', id=entry['id']) }}" class="card-link">Edit</a>
-                        <a href="{{ url_for('delete_entry', id=entry['id']) }}" class="card-link">Delete</a>
-                        <p>{{ entry['type'] }}</p>
-                    </div>
-                </div>
-            {% endfor %}
-            <div class="text-center">
-                <a href="{{ url_for('add_entry', trip_id = trip['id']) }}" class="btn btn-primary">Add entry</a>
             </div>
         </div>
     </div>

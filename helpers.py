@@ -35,7 +35,15 @@ def get_city_coordinates(df, city):
         return None
 
 
+def check_image_present(trip_id):
+    """check if there is trip image in static/uploads"""
+    image_name = None
+    for file in os.listdir('static/uploads'):
+        file_id, file_ext = os.path.splitext(file)
 
+        if file_id == str(trip_id):
+            image_name = file 
+    return image_name
 
 
 def create_postcard(recipient, sender, greeting, message, regards, signature, trip):

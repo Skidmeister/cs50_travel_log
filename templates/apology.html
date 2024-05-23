@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sth went wrong
+{% endblock %}
+
+{% block main %}
+    <div class="alert alert-info" role="alert">
+        ERROR {{error}}: {{ text }}
+    </div>
+
+{% endblock %}

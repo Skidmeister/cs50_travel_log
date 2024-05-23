@@ -18,6 +18,7 @@ from datetime import datetime
 from PIL import Image
 from pillow_heif import register_heif_opener
 
+
 def get_w3w(w3w):
     """Fetches coordinates of a place indicated with what3words"""
     coordinates = geocoder.convert_to_coordinates(w3w)
@@ -87,60 +88,50 @@ def create_postcard(recipient, sender, greeting, message, regards, signature, tr
         center_x = (landscape(letter)[0]) / 2
         pdf.line(center_x, 10, center_x, landscape(letter)[1] - 10)
 
+        # Set font for text
+        pdf.setFont('abc', 24)
         
-        # creating the title by setting it's font  
-        # and putting it on the canvas 
+        # Place the date on the top right, adjusted
+        pdf.drawRightString(landscape(letter)[0] - 20, landscape(letter)[1] - 40, f"{trip['city']}, {trip['country']} - {str(datetime.now().date())}")
+        
+        # Place "From:" and "To: text
+        pdf.drawString(landscape(letter)[0] /2 + 15, landscape(letter)[1] - 90, f"From:   {sender}")
+        pdf.drawString(landscape(letter)[0] /2 + 15 , landscape(letter)[1] - 120, f"To:    {recipient}")
+
+        # Place greeting
+        pdf.drawString(landscape(letter)[0] / 2 + 15, landscape(letter)[1] - 200, greeting)
+
+        # placing place below the image
         pdf.setFont('abc', 36) 
-        pdf.drawCentredString(450, 10, f"{trip['city']}, {trip['country']}")
+        pdf.drawCentredString(landscape(letter)[0] / 4, 20, f"{trip['city']}, {trip['country']}")
 
-        # creating the subtitle by setting it's font,  
-        # colour and putting it on the canvas 
-        pdf.setFillColorRGB(0, 0, 255) 
-        pdf.setFont("abc", 18) 
-        pdf.drawCentredString(450, 720, f"From: {sender}")
-        pdf.drawCentredString(450, 820, f"To: {recipient}")
-        
-
-
-        words = message.split(" ")
-        text_lines = []
-        counter = 0
-        text_line = "" 
-        for word in words:     
-            if counter < 4:
-                text_line += f"{word} "
-                counter += 1
+        # Wrap the message text to fit within the specified width
+        text = pdf.beginText(center_x + 20, landscape(letter)[1] - 250)
+        text.setFont("abc", 22)
+        message_lines = message.split(" ")
+        line = ""
+        for word in message_lines:
+            if pdf.stringWidth(line + word, 'abc', 22) < (landscape(letter)[0] / 2 - 40):
+                line += word + " "
             else:
-                text_lines.append(text_line)
-                text_line = ""
-                counter = 0
+                text.textLine(line)
+                line = word + " "
+        if line:  # Make sure to add any remaining text
+            text.textLine(line)
+    
+        pdf.drawText(text)
 
-        #handle last text line if thera are some words left
-        if text_line:
-            text_lines.append(text_line)
+        # Add regards and signature more to the right
+        text2 = pdf.beginText(center_x + 160, 60)
+        text2.setFont("abc", 22)
+        text2.textLine(regards)
+        text2.textLine(signature)
+        pdf.drawText(text2)
 
-        # creating a multiline text using  
-        # textline and for loop 
-        # pdf.drawText(str(datetime.now()))
-        
-        text = pdf.beginText(450, 680)
-        text.setFont("abc", 18)
-        text.setFillColor(colors.red)
-        text.textLine(str(datetime.now().date()))
-        text.textLine(greeting) 
-        for line in text_lines: 
-            text.textLine(line) 
-        text.textLine(regards)
-        text.textLine(signature)
-        pdf.drawText(text) 
+        # saving the pdf 
+        pdf.save()
+    
+    else:
+        return apology("The picture you have provided is not vertical or square. Horizontal picture is not yet supported.")
 
-        # drawing a image at the  
-        # specified (x.y) position 
-
-
-
-
-
-
-    # saving the pdf 
-    pdf.save()
+    

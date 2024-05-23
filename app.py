@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 from cs50 import SQL
-from flask import Flask, flash, redirect, render_template, request, session, url_for, send_from_directory, jsonify
+from flask import Flask, flash, redirect, render_template, request, url_for, send_from_directory, jsonify
 
 from datetime import datetime
 import folium
@@ -28,6 +28,10 @@ def serve_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 
+@app.route("/apology")
+def apology(text, error=400):
+    """Displays a website with an error"""
+    return render_template("apology.html", text=text, error=error)
 
 
 @app.route("/")
@@ -249,9 +253,7 @@ def generate_postcard(trip_id):
     
     else:
         return render_template("generate_postcard.html", trip_id = trip['id'], trip=trip)
-
-
-
+    
 
 # run app.py when the file is run
 if __name__ == "__main__":
@@ -262,3 +264,4 @@ if __name__ == "__main__":
     
     # add if clause about the what3words api
     app.run(debug = True)
+

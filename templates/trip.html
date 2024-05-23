@@ -35,14 +35,19 @@
 <div>
     <a href="{{ url_for('add_trip_info', id = trip['id']) }}">Add trip info</a>
 </div>
-<h2> Image </h2>
+
 {% if image %}
     <img src="{{ url_for('serve_file', filename= image) }}" alt="Trip Image" class="trip_size">
+    <div>
+        <a href="{{ url_for('upload_image', trip_id = trip['id']) }}">Change image</a>
+    </div>
+{% else %}
+    <div>
+        <a href="{{ url_for('upload_image', trip_id = trip['id']) }}">Upload image</a>
+    </div>
 {% endif %}
 
-<div>
-    <a href="{{ url_for('upload_image', trip_id = trip['id']) }}">Upload image</a>
-</div>
+
 <div>
     <a href="{{ url_for('generate_postcard', trip_id = trip['id']) }}">Generate postcard</a>
 </div>
@@ -86,6 +91,7 @@
 <div>
     <a href="{{ url_for('add_entry', trip_id = trip['id']) }}">Add entry</a>
 </div>
+<h2>Map of spots</h2>
 <!-- Include Folium JavaScript -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <!-- Display the map -->

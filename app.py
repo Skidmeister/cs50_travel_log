@@ -22,6 +22,8 @@ emojis = {1:'😩',
 # Configure the app
 app = Flask(__name__)
 
+app.secret_key = 'XXX'
+
 # Define the directory to store uploaded files
 UPLOADS = 'static/uploads'
 app.config['UPLOAD_FOLDER'] = UPLOADS
@@ -47,12 +49,10 @@ def index():
     
     #prepare a dictionary with images where key is trip id and value is the name of the file
     images = [file for file in os.listdir('static/uploads') if file !=".DS_Store"]
-    print(images)
     images_dict = {}
     for image in images:
         image_id, image_ext = os.path.splitext(image)
         images_dict[int(image_id)] = image
-    print(images_dict)
 
     return render_template("index.html", trips=trips, images=images_dict)
 
@@ -94,7 +94,6 @@ def trip(id):
     #map
     # getting to the csv-database to get the basic coordinates of a city 
     city = trip['city'].title()
-    print(city)
     city_coordinates = get_city_coordinates(df, city)
     # if city coordinates in database get those for initial zoom on the map
     if city_coordinates:
@@ -233,7 +232,6 @@ def add_spot(trip_id):
         time = request.form.get("datetime")
         words = request.form.get("words")
         w3w_dict = get_w3w(words)
-        print(w3w_dict)
         country = w3w_dict['country']
         nearest_place = w3w_dict['nearestPlace']
         longitude = w3w_dict['coordinates']['lng']
@@ -262,7 +260,7 @@ def generate_postcard(trip_id):
 
 
         create_postcard(recipient, sender, greeting, message, regards, signature, trip)
-
+        flash('The postcard has been successfully generated and can be found in the "postcards" folder.')
         return redirect(url_for("trip", id=trip['id']))
     
     else:

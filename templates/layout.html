@@ -24,6 +24,16 @@
     </head>
 
     <body>
+        <!-- Flash message alert -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <header>
+                    <div class="alert alert-primary mb-0 text-center" role="alert">
+                        {{ messages | join(" ") }}
+                    </div>
+                </header>
+            {% endif %}
+        {% endwith %}
 
         <nav class="bg-light border navbar navbar-expand-md navbar-light">
             <div class="container-fluid">
@@ -46,14 +56,6 @@
 
             </div>
         </nav>
-
-        {% if get_flashed_messages() %}
-            <header>
-                <div class="alert alert-primary mb-0 text-center" role="alert">
-                    {{ get_flashed_messages() | join(" ") }}
-                </div>
-            </header>
-        {% endif %}
 
         <main class="container py-5 text-center">
             {% block main %}{% endblock %}

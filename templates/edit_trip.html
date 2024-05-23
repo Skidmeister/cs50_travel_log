@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Edit trip['title']
+{% endblock %}
+
+{% block main %}
+    <form action="/edit-trip/{{ trip['id'] }}" method="post">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto"
+            name="title" placeholder="Trip Title" type="text" value="{{ trip['title'] }}">
+        </div>
+
+        <div class="mb-3">
+            <select class="form-control mx-auto w-auto" name="country" id="country" required>
+                <option value="" disabled selected>Select a country</option>
+                {% for country in countries %}
+                    <option value="{{ country }}">{{ country }}</option>
+                {% endfor %}
+            </select>
+        </div>
+            
+
+        <div class="mb-3">
+            <label for="city">City:</label>
+            <select class="form-control mx-auto w-auto" name="city" id="city" required>
+                <option value="" disabled selected>Select a city</option>
+                <!-- Options will be populated dynamically with JavaScript -->
+            </select>
+        </div>
+
+        <script>
+            document.getElementById('country').addEventListener('change', function() {
+                var country = this.value;
+
+                // Make AJAX request to fetch cities for selected country
+                fetch('/get-cities?country=' + country)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Update options in city select menu
+                        var citySelect = document.getElementById('city');
+                        citySelect.innerHTML = '';
+                        data.forEach(city => {
+                            var option = document.createElement('option');
+                            option.value = city;
+                            option.textContent = city;
+                            citySelect.appendChild(option);
+                        });
+                    });
+            });
+
+        </script>
+
+        <div class="mb-3">
+            <label for="start_date">Start date:</label>
+            <input autocomplete="off" class="form-control mx-auto w-auto" id="start_date" name="start_date" placeholder="Start date" type="date" value="{{ trip['start_date'] }}">
+        </div>
+
+        <div class="mb-3">
+            <label for="end_date">End date:</label>
+            <input autocomplete="off" class="form-control mx-auto w-auto" id="end_date" name="end_date" placeholder="End date" type="date" value="{{ trip['end_date'] }}">
+        </div>
+
+        <label for="transportation_mode">Transportation mode:</label>
+        <select name="transportation_mode" id="transportation_mode">
+            <option disabled selected value="">Mode of transportation</option> 
+            <option value="boat" {% if trip['transportation_mode'] == 'boat' %} selected {% endif %}>boat</option>
+            <option value="bus" {% if trip['transportation_mode'] == 'bus' %} selected {% endif %}>bus</option>
+            <option value="car" {% if trip['transportation_mode'] == 'car' %} selected {% endif %}>car</option> 
+            <option value="plane" {% if trip['transportation_mode'] == 'plane' %} selected {% endif %}>plane</option>
+            <option value="train" {% if trip['transportation_mode'] == 'train' %} selected {% endif %}>train</option>    
+        </select>
+
+        <div class="mb-3">
+            <label for="transportation_cost">Transportation cost (EURO):</label>
+            <input autocomplete="off" class="form-control mx-auto w-auto"
+            name="transportation_cost" placeholder="EURO" type="number" value="{{trip['transportation_cost']}}" id="transportation_cost">
+        </div>  
+
+        <label for="accomodation_type">Accomodation type:</label>
+        <select name="accomodation_type" id="accomodation_type">
+            <option disabled value="">Type of accomodation</option>
+            <option value="appartment" {% if trip['accomodation_type'] == 'appartment' %} selected {% endif %}>appartment</option>
+            <option value="aribnb" {% if trip['accomodation_type'] == 'aribnb' %} selected {% endif %}>aribnb</option>
+            <option value="friend's place" {% if trip['accomodation_type'] == "friend's place" %} selected {% endif %}>friend's place</option> 
+            <option value="hotel" {% if trip['accomodation_type'] == 'hotel' %} selected {% endif %}>hotel</option>   
+        </select>
+
+        <div class="mb-3">
+            <label for="accomodation_cost">Accomodation cost (EURO):</label>
+            <input autocomplete="off" class="form-control mx-auto w-auto"
+            name="accomodation_cost" placeholder="EURO" type="number" value="{{trip['accomodation_cost']}}" id="accomodation_cost">
+        </div>
+
+        
+        <button class="btn btn-primary" type="submit">Submit changes</button>
+    </form>
+{% endblock %}

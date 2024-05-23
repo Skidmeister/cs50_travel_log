@@ -19,6 +19,9 @@ emojis = {1:'😩',
           6:'🤩',
           }
 
+transportation_modes = ["boat", "bus", "car", "plane", "train"]
+accomodation_types = ["appartment","aribnb","friend's place", "hotel"]
+
 # Configure the app
 app = Flask(__name__)
 
@@ -138,20 +141,26 @@ def add_trip():
         return render_template("add_trip.html", countries = countries)
     
 
-@app.route("/add-trip-info/<int:id>", methods=["GET", "POST"])
-def add_trip_info(id):
+@app.route("/edit-trip/<int:id>", methods=["GET", "POST"])
+def edit_trip(id):
+    countries = df['country'].unique().tolist()
     trip = db.execute("SELECT * FROM trips WHERE id = ?", id)[0]
     if request.method == "POST":
+        title = request.form.get("title")
+        city = request.form.get("city")
+        country = request.form.get("country")
+        start_date = datetime.strptime(request.form.get("start_date"), "%Y-%m-%d").date()
+        end_date = datetime.strptime(request.form.get("end_date"), "%Y-%m-%d").date()
         transportation_mode = request.form.get("transportation_mode")
         transportation_cost = request.form.get("transportation_cost")
         accomodation_type = request.form.get("accomodation_type")
         accomodation_cost = request.form.get("accomodation_cost")
 
-        #add to database
-        db.execute("UPDATE trips SET transportation_mode = ?, transportation_cost = ?, accomodation_type = ?, accomodation_cost = ? WHERE id = ?", transportation_mode, transportation_cost, accomodation_type, accomodation_cost, id)
-        return redirect(url_for('trip', id=id))
+        # edit database
+        db.execute("UPDATE trips SET title = ?, city = ?, country = ?, start_date = ?, end_date = ?, transportation_mode = ?, transportation_cost = ?, accomodation_type = ?, accomodation_cost = ? WHERE id = ?", title, city, country, start_date, end_date, transportation_mode, transportation_cost, accomodation_type, accomodation_cost, id)
+        return redirect(url_for('trips'))
     else:
-        return render_template("add_trip_info.html", trip=trip)
+        return render_template("edit_trip.html", id=trip['id'], trip=trip, countries=countries, accomodation_types=accomodation_types, transportation_modes=transportation_modes)
 
 
 

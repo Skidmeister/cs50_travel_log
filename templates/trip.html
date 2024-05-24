@@ -49,12 +49,12 @@
             {% for entry in entries %}
                 <div class="card mb-3">
                     <div class="card-body">
+                        <p>Entry type: {{ entry['type'] }}</p>
                         <h5 class="card-title">{{ entry['datetime'] }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Mood: {{ emojis[entry['mood']] }}</h6>
                         <p class="card-text">{{ entry['text'] }}</p>
                         <a href="{{ url_for('edit_entry', id=entry['id']) }}" class="card-link">Edit</a>
                         <a href="{{ url_for('delete_entry', id=entry['id']) }}" class="card-link">Delete</a>
-                        <p>{{ entry['type'] }}</p>
                     </div>
                 </div>
             {% endfor %}
@@ -76,6 +76,7 @@
                             <th>Longitude</th>
                             <th>Latitude</th>
                             <th>Description</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -86,6 +87,10 @@
                                 <td>{{ spot['longitude'] }}</td>
                                 <td>{{ spot['latitude'] }}</td>
                                 <td>{{ spot['description'] }}</td>
+                                <td>
+                                    <a href="{{ url_for('edit_spot', id=spot['id']) }}">Edit</a>
+                                    <a href="{{ url_for('delete_spot', id=spot['id']) }}">Delete</a>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

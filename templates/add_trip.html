@@ -8,11 +8,11 @@
     <form action="/add-trip" method="post">
         <div class="mb-3">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto"
-            name="title" placeholder="Trip Title" type="text">
+            name="title" placeholder="Trip Title" type="text" required>
         </div>
 
         <div class="mb-3">
-            <select class="form-control mx-auto w-auto" name="country" id="country">
+            <select class="form-control mx-auto w-auto" name="country" id="country" required>
                 <option value="" disabled selected>Select a country</option>
                 {% for country in countries %}
                     <option value="{{ country }}">{{ country }}</option>
@@ -22,7 +22,7 @@
 
         <div class="mb-3">
             <label for="city">City:</label>
-            <select class="form-control mx-auto w-auto" name="city" id="city">
+            <select class="form-control mx-auto w-auto" name="city" id="city" required>
                 <option value="" disabled selected>Select a city</option>
                 <!-- Options will be populated dynamically with JavaScript -->
             </select>
@@ -51,12 +51,12 @@
 
         <div class="mb-3">
             <label for="start_date">Start date:</label>
-            <input autocomplete="off" class="form-control mx-auto w-auto" id="start_date" name="start_date" placeholder="Start date" type="date">
+            <input autocomplete="off" class="form-control mx-auto w-auto" id="start_date" name="start_date" placeholder="Start date" type="date" required>
         </div>
 
         <div class="mb-3">
             <label for="end_date">End date:</label>
-            <input autocomplete="off" class="form-control mx-auto w-auto" id="end_date" name="end_date" placeholder="End date" type="date">
+            <input autocomplete="off" class="form-control mx-auto w-auto" id="end_date" name="end_date" placeholder="End date" type="date" required>
         </div>
 
         

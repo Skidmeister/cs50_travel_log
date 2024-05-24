@@ -71,9 +71,12 @@ def trips():
     # Add markers to the map of done trips
     for trip in trips:
         city = trip['city'].title()
+        print(city)
         city_coordinates = get_city_coordinates(df, city)
+        # Create the popup HTML
+        popup_html = f'<a href="trip/{trip['id']}">{trip["title"]}</a>'
         if city_coordinates:
-            folium.Marker(location=city_coordinates, popup=trip['title'], tooltip=f"{trip['start_date']}-{trip['end_date']}").add_to(m)
+            folium.Marker(location=city_coordinates, popup=popup_html, tooltip=f"{trip['start_date']}-{trip['end_date']}").add_to(m)
 
 
     return render_template("trips.html", trips=trips, map=m._repr_html_())
@@ -158,7 +161,7 @@ def edit_trip(id):
 
         # edit database
         db.execute("UPDATE trips SET title = ?, city = ?, country = ?, start_date = ?, end_date = ?, transportation_mode = ?, transportation_cost = ?, accomodation_type = ?, accomodation_cost = ? WHERE id = ?", title, city, country, start_date, end_date, transportation_mode, transportation_cost, accomodation_type, accomodation_cost, id)
-        return redirect(url_for('trips'))
+        return redirect(url_for('trip', id=trip['id']))
     else:
         return render_template("edit_trip.html", id=trip['id'], trip=trip, countries=countries, accomodation_types=accomodation_types, transportation_modes=transportation_modes)
 
@@ -286,6 +289,41 @@ def add_spot(trip_id):
     else:
         return render_template("add_spot.html", trip_id=trip_id, trip=trip)
 
+@app.route("/delete_spot/<int:id>", methods=["GET","POST"])
+def delete_spot(id):
+    """Page to delete a spot"""
+    spot = db.execute("SELECT * FROM spots WHERE id =?", id)[0]
+    trip = db.execute("SELECT * FROM trips WHERE id =?", spot['trip_id'])[0]
+    if request.method == "POST":
+        if request.form.get("confirm") == "yes":
+            db.execute("DELETE FROM spots WHERE id=?", spot['id'])
+            flash(f"Successfully deleted spot: {spot['name']} from {trip['title']}.")
+        else:
+            flash("Deletion cancelled.")
+        return redirect(url_for("trip", id=spot['trip_id']))
+    else:
+        return render_template("delete_spot.html", trip=trip, spot=spot)
+
+@app.route("/edit_spot/<int:id>", methods=["GET", "POST"])
+def edit_spot(id):
+    """Page to edit the created spot"""
+    spot = db.execute("SELECT * FROM spots WHERE id=?", id)[0]
+    if request.method == "POST":
+        words = request.form.get("words")
+        dt = request.form.get("datetime")
+        name = request.form.get("name")
+        description = request.form.get("description")
+        w3w_dict = get_w3w(words)
+        country = w3w_dict['country']
+        nearest_place = w3w_dict['nearestPlace']
+        longitude = w3w_dict['coordinates']['lng']
+        latitude = w3w_dict['coordinates']['lat']
+        # changes in the database
+        db.execute("UPDATE spots SET w3s = ?, datetime = ?, name = ?, description = ?, longitude = ?, latitude = ?, country = ?, nearest_place = ? WHERE id = ?", words, dt, name, description, longitude, latitude, country, nearest_place, spot['id'])
+        flash("Successfully made changes to the database.")
+        return redirect(url_for('trip', id=spot['trip_id']))
+    else:
+        return render_template("edit_spot.html", spot=spot)
 
 @app.route("/generate-postcard/<int:trip_id>", methods = ["GET", "POST"])
 def generate_postcard(trip_id):

@@ -1,11 +1,6 @@
 import what3words
 import os
 
-
-# passing the w3w API-key
-geocoder = what3words.Geocoder("XT250P1Q")
-
-
 # importing modules for postcard
 from reportlab.pdfgen import canvas 
 from reportlab.pdfbase.ttfonts import TTFont 
@@ -18,6 +13,29 @@ from datetime import datetime
 from PIL import Image
 from pillow_heif import register_heif_opener
 
+
+# What3words API functions
+def check_w3w_api_key():
+    if not os.path.isfile('w3w_api_key.txt'):
+        api_key = input("""Hello and welcome to travel-log. 
+To use this app you will need to submit a free API key for what3words. 
+To get the free API key visit: https://accounts.what3words.com/select-plan?referrer=/public-api
+Please submit the key here: """)
+        with open('w3w_api_key.txt', 'w') as file:
+            file.write(api_key)
+        return api_key
+    else:
+        return True
+    
+
+def get_w3w_api_key():
+    if os.path.isfile('w3w_api_key.txt'):
+        with open('w3w_api_key.txt', 'r') as file:
+            return file.read().strip()
+    else:
+        return None
+
+geocoder = what3words.Geocoder(get_w3w_api_key())
 
 def get_w3w(w3w):
     """Fetches coordinates of a place indicated with what3words"""
@@ -142,4 +160,6 @@ def create_postcard(recipient, sender, greeting, message, regards, signature, tr
     else:
         return apology("The picture you have provided is not vertical or square. Horizontal picture is not yet supported.")
 
+
     
+

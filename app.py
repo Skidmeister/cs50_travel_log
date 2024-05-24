@@ -7,7 +7,7 @@ from flask import Flask, flash, redirect, render_template, request, url_for, sen
 from datetime import datetime
 import folium
 
-from helpers import get_w3w, get_city_coordinates, create_postcard, check_image_present
+from helpers import get_w3w, get_city_coordinates, create_postcard, check_image_present, check_w3w_api_key
 
 import pandas as pd
 
@@ -356,6 +356,8 @@ if __name__ == "__main__":
     
     df = pd.read_csv('worldcities.csv')
     
+    check_w3w_api_key()
+
     # add if clause about the what3words api
-    app.run(debug = True)
+    app.run(debug = False)
 

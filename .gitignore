@@ -1,9 +1,2 @@
 /venv
 .DS_Store
-/static/uploads
-travel_log.db
-brulion.py
-/postcards
-*.png
-*.ttf
-w3w_api_key.txt

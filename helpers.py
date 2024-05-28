@@ -161,5 +161,13 @@ def create_postcard(recipient, sender, greeting, message, regards, signature, tr
         return apology("The picture you have provided is not vertical or square. Horizontal picture is not yet supported.")
 
 
-    
+def convert_heif_to_jpeg(image, trip_id):
+    """Converts a HEIF image to jpeg if it was Heif, saves it and returns nothing"""
+    image_id, image_ext = os.path.splitext(image)
+    if image_ext in [".HEIC", ".heic"]:
+        register_heif_opener()
+        i = Image.open(image)
+        i.convert('RGB').save(f'static/uploads/{trip_id}.jpeg')
+        os.remove(image)
+    return None
 

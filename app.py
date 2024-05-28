@@ -7,7 +7,7 @@ from flask import Flask, flash, redirect, render_template, request, url_for, sen
 from datetime import datetime
 import folium
 
-from helpers import get_w3w, get_city_coordinates, create_postcard, check_image_present, check_w3w_api_key
+from helpers import get_w3w, get_city_coordinates, create_postcard, check_image_present, check_w3w_api_key, convert_heif_to_jpeg
 
 import pandas as pd
 
@@ -260,6 +260,7 @@ def upload_image(trip_id):
             #change name but preserve file extension
             file.filename = f"{trip_id}.{file.filename.split('.')[-1]}"
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            convert_heif_to_jpeg(f"static/uploads/{file.filename}", trip_id=trip_id)
             return redirect(url_for("trip", id=trip_id))
         else:
             print("mistake")

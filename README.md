@@ -1,5 +1,8 @@
 # TRAVEL-LOG
 #### Video Demo:  
+
+https://youtu.be/WN5u2nJ4RBg
+
 #### Description:
 
 Have you ever been asked if you've visited a certain place but couldn't remember when exactly? Or perhaps you have a favorite Italian restaurant in Rome but forgot to jot down its name? If such or similar situations happen to you, Travel-log might be just what you need.
@@ -27,6 +30,7 @@ Last but not least, a standout feature is the postcard generator. After entering
 Apart from the pages dedicated to specific trips, there are several overview pages. The album provides a visually appealing way to display all trips with their images. The trips page features a table with basic information about each trip and a map showing the cities visited. Lastly, the entry history page displays all entries in chronological order, regardless of the trip.
 
 ### Installation:
+
 Since this is a python app the user has to have the python and required libraries preinstalled to use this app. With python in place and the app repository downloaded it is the most convenient for the user to create a python virtual environment inside of the app repository and install the required libraries with the requirements.txt file.
 
 Here is how to install the app from scratch (on Mac):
